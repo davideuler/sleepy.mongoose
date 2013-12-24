@@ -1,3 +1,4 @@
+#!/usr/local/bin/python
 # Copyright 2009-2010 10gen, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +16,10 @@
 from SocketServer import BaseServer
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from handlers import MongoHandler
+import logging
+
+FORMAT ="%(asctime)-8s%(message)s"
+logging.basicConfig(format=FORMAT,level=logging.INFO)
 
 try:
     from OpenSSL import SSL
@@ -125,6 +130,8 @@ class MongoHTTPRequest(BaseHTTPRequestHandler):
             for header in self.response_headers:
                 self.send_header(header[0], header[1])
             self.end_headers()
+
+            logging.info("func: %s, name: %s,  %s.%s, uri:%s, args:%s", func_name, name,db,collection, uri, args);
 
             if self.jsonp_callback:
                 func(args, self.prependJSONPCallback, name = name, db = db, collection = collection)
